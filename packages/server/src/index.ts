@@ -9,5 +9,6 @@ export type AppType = typeof router;
 
 export default {
   port: 9595,
+  hostname: "0.0.0.0",
   fetch: router.fetch,
 };

@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "dev": "bun --filter '*' dev",
-    "build": "bun --filter '*' build"
+    "build": "bun --filter '*' build",
+    "start": "cd packages/server && bun run dev"
   },
   "devDependencies": {
     "@types/bun": "latest"
