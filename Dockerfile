@@ -15,8 +15,10 @@ RUN bun install --frozen-lockfile
 # Copy the rest of the application
 COPY . .
 
+WORKDIR /app/packages/server
+
 # Set the entrypoint to run server
-CMD ["bun", "run", "packages/server/src/index.ts"]
+CMD ["bun", "run", "src/index.ts"]
 
 
 # run docker build --platform linux/amd64 -t your-image-name .
