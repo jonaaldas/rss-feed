@@ -5,7 +5,7 @@ FROM --platform=linux/amd64 oven/bun:1
 WORKDIR /app
 
 # Copy package.json files
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 COPY packages/server/package.json ./packages/server/
 COPY packages/web/package.json ./packages/web/
 
