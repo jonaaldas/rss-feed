@@ -5,7 +5,8 @@ import { auth } from "../../lib/auth";
 const router = new Hono<{ Variables: AuthVariables }>();
 
 router
-  .get("/session", requireAuth, (c) => {
+  .on(["POST", "GET"], "/*", (c) => auth.handler(c.req.raw))
+  .get("/session", (c) => {
     const session = c.get("session");
     const user = c.get("user");
 
@@ -13,7 +14,6 @@ router
       session,
       user,
     });
-  })
-  .on(["POST", "GET"], "/*", (c) => auth.handler(c.req.raw));
+  });
 
 export default router;

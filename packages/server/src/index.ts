@@ -10,9 +10,8 @@ const router = new Hono<{ Variables: AuthVariables }>();
 router
   .use(logger())
   .use(
-    "*", // or replace with "*" to enable cors for all routes
     cors({
-      origin: "http://localhost:5173", // replace with your origin
+      origin: ["http://localhost:5173", "http://localhost:3000"],
       allowHeaders: ["Content-Type", "Authorization"],
       allowMethods: ["POST", "GET", "OPTIONS"],
       exposeHeaders: ["Content-Length"],
@@ -20,16 +19,14 @@ router
       credentials: true,
     })
   )
+  .get("/", (c) => c.json({ message: "Hello World" }))
   .basePath("/api")
-  .route("/auth", authRoutes)
   .get("/ping", (c) => c.json({ message: "pong" }))
-  .get("*", serveStatic({ root: "./frontend/dist" }))
-  .get("*", serveStatic({ path: "./frontend/dist/index.html" }));
+  .route("/auth", authRoutes);
 
 export type AppType = typeof router;
 
 export default {
   port: 9595,
-  hostname: "127.0.0.1",
   fetch: router.fetch,
 };

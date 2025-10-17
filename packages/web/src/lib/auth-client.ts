@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/vue";
 export const authClient = createAuthClient({
-  baseURL: "http://127.0.0.1:9595",
+  baseURL: "http://localhost:5173/api/auth",
 });
 
 export const { signIn, signUp, useSession } = authClient;
