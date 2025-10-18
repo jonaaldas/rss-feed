@@ -41,37 +41,39 @@ const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
       </div>
       <SearchForm />
     </SidebarHeader>
-    <SidebarContent class="gap-1 p-2 overflow-y-auto h-full">
+    <SidebarContent class="gap-3 p-3">
       <Collapsible
         v-for="item in navMain"
         :key="item.title"
         :title="item.title"
         default-open
-        class="group/collapsible border border-border/30 rounded-lg overflow-hidden bg-card/50 hover:bg-card/80 transition-colors"
+        class="group/collapsible"
       >
-        <SidebarGroup class="p-4">
+        <SidebarGroup class="p-0">
           <SidebarGroupLabel
             as-child
-            class="group/label p-5 text-sm font-medium text-sidebar-foreground hover:bg-muted/50 cursor-pointer transition-colors border-b border-border/20 group-data-[state=open]/collapsible:border-border/30"
+            class="group/label p-4 text-sm font-medium text-sidebar-foreground hover:bg-muted/50 cursor-pointer transition-colors border-b border-border/20 group-data-[state=open]/collapsible:border-border/30"
           >
             <CollapsibleTrigger
               class="flex items-center justify-between w-full"
             >
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-3 min-w-0 flex-1 pr-3">
                 <Rss class="w-4 h-4 text-primary shrink-0" />
-                <span class="truncate text-left">{{ item.title }}</span>
-                <Badge variant="secondary" class="text-xs px-2 py-0.5">
+                <span class="truncate text-left flex-1">{{ item.title }}</span>
+                <Badge variant="secondary" class="text-xs px-2 py-0.5 shrink-0">
                   {{ item.items?.length || 0 }}
                 </Badge>
               </div>
               <ChevronRight
-                class="w-4 h-4 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-90"
+                class="w-4 h-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
               />
             </CollapsibleTrigger>
           </SidebarGroupLabel>
-          <CollapsibleContent>
-            <SidebarGroupContent class="p-4">
-              <SidebarMenu class="space-y-3 p-2">
+          <CollapsibleContent
+            class="transition-all duration-200 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+          >
+            <SidebarGroupContent class="p-2">
+              <SidebarMenu class="space-y-1">
                 <SidebarMenuItem
                   v-for="childItem in item.items"
                   :key="childItem.title"
@@ -80,13 +82,15 @@ const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
                   <SidebarMenuButton
                     as-child
                     :is-active="childItem.isActive"
-                    class="p-3 rounded-md hover:bg-muted/70 transition-colors group-hover:shadow-sm cursor-pointer px-5"
+                    class="p-3 rounded-md hover:bg-muted/70 transition-all duration-150 group-hover:shadow-sm cursor-pointer"
                   >
                     <a :href="item.url" class="flex items-center gap-3">
-                      <Calendar class="text-muted-foreground shrink-0" />
-                      <div class="flex-1">
+                      <Calendar
+                        class="text-muted-foreground shrink-0 w-4 h-4"
+                      />
+                      <div class="flex-1 min-w-0">
                         <p
-                          class="text-xs truncate font-medium leading-5 text-foreground group-hover:text-primary transition-colors line-clamp-2"
+                          class="text-sm truncate font-medium leading-5 text-foreground group-hover:text-primary transition-colors"
                         >
                           {{ childItem.title }}
                         </p>
