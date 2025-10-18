@@ -1,10 +1,11 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
-import { AuthVariables } from "./middlewate/auth";
+import { AuthVariables, requireAuth } from "./middlewate/auth";
 import { logger } from "hono/logger";
-import authRoutes from "./routes/auth";
-import rssRoutes from "./routes/rss";
+import authRouter, { AuthRoutes } from "./routes/auth";
+import rssRouter from "./routes/rss";
+import { hc } from "hono/client";
 
 const router = new Hono<{ Variables: AuthVariables }>();
 
@@ -20,13 +21,15 @@ router
       credentials: true,
     })
   )
-  .get("/", (c) => c.json({ message: "Hello World" }))
+  .get("/hello", (c) => c.json({ message: "Hello World" }))
   .basePath("/api")
   .get("/ping", (c) => c.json({ message: "pong" }))
-  .route("/auth", authRoutes)
-  .route("/rss", rssRoutes);
+  .route("/auth", authRouter)
+  .route("/rss", rssRouter);
 
-export type AppType = typeof router;
+// Export the router type for client usage
+export type AppRouter = typeof router;
+export type RssRouter = typeof rssRouter;
 
 export default {
   port: 9595,
