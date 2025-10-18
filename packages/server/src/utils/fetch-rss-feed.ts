@@ -1,5 +1,5 @@
 import { ofetch } from "ofetch";
-import * as Parser from "rss-parser";
+import * as Parser from "rss-parser/esm/index.js";
 
 export const fetchRssFeed = async (url: string) => {
   try {

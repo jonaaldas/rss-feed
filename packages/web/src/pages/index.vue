@@ -1,33 +1,75 @@
+<script lang="ts">
+export const iframeHeight = "800px";
+export const description = "A sidebar with collapsible sections.";
+</script>
+
 <script setup lang="ts">
-import LoginForm from "@/components/LoginForm.vue";
+import AppSidebar from "@/components/AppSidebar.vue";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useMutation } from "@pinia/colada";
+import { ref } from "vue";
 import { client } from "@/lib/api";
 
-const response = await client.api.ping.$get();
-const { message } = await response.json();
+const url = ref("");
 
-const rssFeeds = await client.api.rss.$get();
-const data = await rssFeeds.json();
-console.log(data);
+const { mutate: saveRss, status } = useMutation({
+  mutation: (url: string) =>
+    client.api.rss.save.$post({
+      form: {
+        url,
+      },
+    }),
+});
 </script>
 
 <template>
-  <div>
-    <h1 class="text-2xl bg-red-500 font-bold">{{ message }}</h1>
-    <LoginForm />
-  </div>
+  <SidebarProvider>
+    <AppSidebar />
+    <SidebarInset>
+      <header
+        class="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4"
+      >
+        <SidebarTrigger class="-ml-1" />
+        <Separator orientation="vertical" class="mr-2 h-4" />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem class="hidden md:block">
+              <BreadcrumbLink href="#">
+                Building Your Application
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator class="hidden md:block" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </header>
+      <div class="flex flex-1 flex-col gap-4 p-4 mx-72">
+        <Input type="text" placeholder="Enter RSS URL" v-model="url" />
+        <Button @click="saveRss(url)">Add</Button>
+        <div v-if="status === 'success'">
+          <p>RSS feed added successfully</p>
+        </div>
+        <div v-if="status === 'error'">
+          <p>Error adding RSS feed</p>
+        </div>
+      </div>
+    </SidebarInset>
+  </SidebarProvider>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
