@@ -2,9 +2,7 @@ import { Hono } from "hono";
 import { requireAuth, AuthVariables } from "../middlewate/auth";
 import { auth } from "../../lib/auth";
 
-const router = new Hono<{ Variables: AuthVariables }>();
-
-router
+const router = new Hono<{ Variables: AuthVariables }>()
   .on(["POST", "GET"], "/*", (c) => auth.handler(c.req.raw))
   .get("/session", (c) => {
     const session = c.get("session");

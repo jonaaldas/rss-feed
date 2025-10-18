@@ -3,7 +3,7 @@ import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { AuthVariables, requireAuth } from "./middlewate/auth";
 import { logger } from "hono/logger";
-import authRouter, { AuthRoutes } from "./routes/auth";
+import authRouter from "./routes/auth";
 import rssRouter from "./routes/rss";
 import { hc } from "hono/client";
 
@@ -28,8 +28,7 @@ router
   .route("/rss", rssRouter);
 
 // Export the router type for client usage
-export type AppRouter = typeof router;
-export type RssRouter = typeof rssRouter;
+export const rssClient = hc<typeof rssRouter>("http://localhost:9595/api");
 
 export default {
   port: 9595,
