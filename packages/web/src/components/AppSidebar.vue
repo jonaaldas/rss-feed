@@ -2,7 +2,6 @@
 import type { SidebarProps } from "@/components/ui/sidebar";
 import { ChevronRight, Rss, Calendar } from "lucide-vue-next";
 import SearchForm from "@/components/SearchForm.vue";
-import VersionSwitcher from "@/components/VersionSwitcher.vue";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,7 +19,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../components/ui/badge";
 
 type NavItem = {
   title: string;
@@ -30,6 +29,14 @@ type NavItem = {
 };
 
 const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
+
+const emit = defineEmits<{
+  selectArticle: [item: NavItem];
+}>();
+
+const handleArticleClick = (item: NavItem) => {
+  emit("selectArticle", item);
+};
 </script>
 
 <template>
@@ -80,11 +87,11 @@ const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
                   class="group"
                 >
                   <SidebarMenuButton
-                    as-child
                     :is-active="childItem.isActive"
-                    class="p-3 rounded-md hover:bg-muted/70 transition-all duration-150 group-hover:shadow-sm cursor-pointer"
+                    class="p-3 hover:bg-muted/70 cursor-pointer"
+                    @click="handleArticleClick(childItem)"
                   >
-                    <a :href="item.url" class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 w-full">
                       <Calendar
                         class="text-muted-foreground shrink-0 w-4 h-4"
                       />
@@ -95,7 +102,7 @@ const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
                           {{ childItem.title }}
                         </p>
                       </div>
-                    </a>
+                    </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
