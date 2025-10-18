@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { rssClient } from "@server/index";
-const { data } = await rssClient.index.$get();
+import LoginForm from "@/components/LoginForm.vue";
+import { client } from "@/lib/api";
+
+const response = await client.api.ping.$get();
+const { message } = await response.json();
+
+const rssFeeds = await client.api.rss.$get();
+const data = await rssFeeds.json();
+console.log(data);
 </script>
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold">Hello World</h1>
+    <h1 class="text-2xl bg-red-500 font-bold">{{ message }}</h1>
+    <LoginForm />
   </div>
 </template>
 

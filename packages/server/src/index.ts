@@ -5,11 +5,10 @@ import { AuthVariables, requireAuth } from "./middlewate/auth";
 import { logger } from "hono/logger";
 import authRouter from "./routes/auth";
 import rssRouter from "./routes/rss";
-import { hc } from "hono/client";
 
-const router = new Hono<{ Variables: AuthVariables }>();
+const app = new Hono<{ Variables: AuthVariables }>();
 
-router
+const router = app
   .use(logger())
   .use(
     cors({
@@ -27,10 +26,9 @@ router
   .route("/auth", authRouter)
   .route("/rss", rssRouter);
 
-// Export the router type for client usage
-export const rssClient = hc<typeof rssRouter>("http://localhost:9595/api");
+export type AppType = typeof router;
 
 export default {
   port: 9595,
-  fetch: router.fetch,
+  fetch: app.fetch,
 };
