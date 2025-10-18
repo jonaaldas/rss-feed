@@ -24,9 +24,9 @@ export const saveRssFeed = async (
       .insert(rssFeed)
       .values(validatedRssFeedValues)
       .returning();
-    return newRssFeed;
+    return { data: newRssFeed, error: null };
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to save RSS feed");
+    return { data: null, error: error };
   }
 };

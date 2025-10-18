@@ -50,12 +50,15 @@ const app = new Hono<{
         title: feed.title,
         link: feed.link,
         feedUrl: feed.feedUrl,
-        lastBuildDate: feed.lastBuildDate,
+        lastBuildDate: new Date(feed.lastBuildDate),
         feedItems: feed.items,
         itemCount: feed.items.length,
       };
-      const rssFeed = await saveRssFeed(data);
-      return c.json({ data: rssFeed, success: true });
+      const { data: rssFeed, error } = await saveRssFeed(data);
+      if (error) {
+        return c.json({ error: error, success: false }, 500);
+      }
+      return c.json({ data: rssFeed, error: null, success: true });
     }
   )
   .post("/new", async (c) => {

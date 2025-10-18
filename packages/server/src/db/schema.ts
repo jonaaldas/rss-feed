@@ -9,7 +9,7 @@ export const rssFeed = pgTable("rss_feed", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  url: text("url").notNull(),
+  url: text("url").notNull().unique(),
   title: text("title").notNull(),
   link: text("link").notNull(),
   feedUrl: text("feed_url").notNull(),
