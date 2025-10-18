@@ -1,7 +1,12 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view></router-view>
+  <Suspense>
+    <router-view></router-view>
+    <template #fallback>
+      <div>Loading...</div>
+    </template>
+  </Suspense>
 </template>
 
 <style scoped></style>
