@@ -23,5 +23,11 @@ export default defineConfig({
   },
   build: {
     outDir: "../server/frontend/dist",
+    rollupOptions: {
+      output: {
+        // Don't generate source maps for production
+        sourcemap: false,
+      },
+    },
   },
 });
