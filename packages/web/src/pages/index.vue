@@ -19,15 +19,27 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@pinia/colada";
 import { computed, ref, watch } from "vue";
 import { client } from "@/lib/api";
 import { useRoute, useRouter } from "vue-router";
 import ThemeSwitcher from "@/components/theme-switcher.vue";
+import { ExternalLink, Calendar, User } from "lucide-vue-next";
 
 const route = useRoute();
 const router = useRouter();
 const selectedArticle = ref<any>(null);
+const selectedFeed = ref<any>(null);
 
 const { data: rssFeeds } = useQuery({
   key: ["rssFeeds1"],
@@ -66,6 +78,7 @@ const navMain = computed(() => {
     return {
       title: feed.title,
       url: "/rss/",
+      id: feed.id,
       items: feedItems.map((item: any) => ({
         title: item.title,
         url: "/rss/",
@@ -76,29 +89,36 @@ const navMain = computed(() => {
   });
 });
 
-const currentFeed = computed(() => {
-  if (!selectedArticle.value || !rssFeeds.value || !("data" in rssFeeds.value))
-    return null;
-
-  for (const feed of rssFeeds.value.data) {
-    const feedItems = Array.isArray(feed.feedItems) ? feed.feedItems : [];
-    const hasArticle = feedItems.some(
-      (item: any) => item.link === selectedArticle.value?.link
-    );
-    if (hasArticle) {
-      return feed;
-    }
-  }
-  return null;
-});
-
 const handleArticleSelect = (item: any) => {
   selectedArticle.value = item;
   router.push({
     query: {
+      feed: selectedFeed.value?.id,
       article: encodeURIComponent(item.link || item.guid || item.title),
     },
   });
+};
+
+const handleFeedSelect = (feed: any) => {
+  selectedFeed.value = feed;
+  selectedArticle.value = null;
+  router.push({
+    query: {
+      feed: feed.id,
+    },
+  });
+};
+
+const selectFeedFromQuery = () => {
+  const feedParam = route.query.feed as string;
+  if (!feedParam || !rssFeeds.value || !("data" in rssFeeds.value)) return;
+
+  const feed = rssFeeds.value.data.find(
+    (f: any) => f.id === parseInt(feedParam)
+  );
+  if (feed) {
+    selectedFeed.value = feed;
+  }
 };
 
 const selectArticleFromQuery = () => {
@@ -118,6 +138,7 @@ const selectArticleFromQuery = () => {
 
     if (article) {
       selectedArticle.value = article;
+      selectedFeed.value = feed;
       break;
     }
   }
@@ -126,20 +147,33 @@ const selectArticleFromQuery = () => {
 watch(
   () => rssFeeds.value,
   (newValue) => {
-    if (newValue && "data" in newValue && route.query.article) {
-      selectArticleFromQuery();
+    if (newValue && "data" in newValue) {
+      if (route.query.feed) {
+        selectFeedFromQuery();
+      }
+      if (route.query.article) {
+        selectArticleFromQuery();
+      }
     }
   },
   { immediate: true }
 );
 
 watch(
-  () => route.query.article,
-  (newArticle) => {
-    if (newArticle && rssFeeds.value) {
-      selectArticleFromQuery();
-    } else if (!newArticle) {
-      selectedArticle.value = null;
+  () => route.query,
+  (newQuery) => {
+    if (rssFeeds.value && "data" in rssFeeds.value) {
+      if (newQuery.feed) {
+        selectFeedFromQuery();
+      } else {
+        selectedFeed.value = null;
+      }
+
+      if (newQuery.article) {
+        selectArticleFromQuery();
+      } else {
+        selectedArticle.value = null;
+      }
     }
   }
 );
@@ -147,7 +181,11 @@ watch(
 
 <template>
   <SidebarProvider>
-    <AppSidebar :navMain="navMain" @select-article="handleArticleSelect" />
+    <AppSidebar
+      :navMain="navMain"
+      @select-article="handleArticleSelect"
+      @select-feed="handleFeedSelect"
+    />
     <SidebarInset>
       <header
         class="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 justify-between"
@@ -160,12 +198,18 @@ watch(
               <BreadcrumbItem class="hidden md:block">
                 <BreadcrumbLink href="/">RSS Feeds</BreadcrumbLink>
               </BreadcrumbItem>
-              <template v-if="currentFeed">
+              <template v-if="selectedFeed">
                 <BreadcrumbSeparator class="hidden md:block" />
                 <BreadcrumbItem class="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    {{ currentFeed.title }}
+                  <BreadcrumbLink
+                    v-if="selectedArticle"
+                    :href="`/?feed=${selectedFeed.id}`"
+                  >
+                    {{ selectedFeed.title }}
                   </BreadcrumbLink>
+                  <BreadcrumbPage v-else>
+                    {{ selectedFeed.title }}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </template>
               <template v-if="selectedArticle">
@@ -187,13 +231,98 @@ watch(
       </div> -->
       <div class="w-full max-w-4xl mx-auto px-4 py-8">
         <div
-          v-if="!selectedArticle"
+          v-if="!selectedFeed && !selectedArticle"
           class="text-center text-muted-foreground py-20"
         >
-          <p class="text-lg">Select an article from the sidebar to read</p>
+          <p class="text-lg">
+            Select a feed or article from the sidebar to read
+          </p>
         </div>
+
+        <div v-else-if="selectedFeed && !selectedArticle" class="space-y-6">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">{{ selectedFeed.title }}</h1>
+            <div class="flex items-center gap-2">
+              <Badge variant="secondary">
+                {{ selectedFeed.items?.length || 0 }} articles
+              </Badge>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <Card
+              v-for="item in selectedFeed.items"
+              :key="item.link || item.guid"
+              class="hover:shadow-lg transition-shadow cursor-pointer group"
+              @click="handleArticleSelect(item)"
+            >
+              <CardHeader>
+                <CardTitle
+                  class="text-xl leading-tight group-hover:text-primary transition-colors line-clamp-2"
+                >
+                  {{ item.title }}
+                </CardTitle>
+                <CardDescription class="flex flex-wrap items-center gap-3 mt-2">
+                  <span v-if="item.pubDate" class="flex items-center gap-1.5">
+                    <Calendar class="w-3.5 h-3.5" />
+                    {{
+                      new Date(item.pubDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }}
+                  </span>
+                  <span v-if="item.creator" class="flex items-center gap-1.5">
+                    <User class="w-3.5 h-3.5" />
+                    {{ item.creator }}
+                  </span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p
+                  v-if="item.contentSnippet"
+                  class="text-muted-foreground line-clamp-4 text-sm leading-relaxed"
+                >
+                  {{ item.contentSnippet }}
+                </p>
+                <p v-else class="text-muted-foreground italic text-sm">
+                  No preview available
+                </p>
+              </CardContent>
+              <CardFooter class="flex gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  class="flex-1"
+                  @click="handleArticleSelect(item)"
+                >
+                  Read Article
+                </Button>
+                <Button
+                  v-if="item.link"
+                  variant="outline"
+                  size="sm"
+                  as-child
+                  @click.stop
+                >
+                  <a
+                    :href="item.link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-1.5"
+                  >
+                    <ExternalLink class="w-3.5 h-3.5" />
+                    Original
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+
         <article
-          v-else
+          v-else-if="selectedArticle"
           class="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-4xl prose-h1:mb-8 prose-h1:mt-0 prose-h1:leading-tight prose-h2:text-3xl prose-h2:mb-6 prose-h2:mt-10 prose-h2:text-foreground prose-h3:text-2xl prose-h3:mb-4 prose-h3:mt-8 prose-h3:text-foreground prose-h4:text-xl prose-h4:mb-3 prose-h4:mt-6 prose-p:text-base prose-p:leading-7 prose-p:mb-6 prose-p:text-muted-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-strong:font-semibold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-pre:bg-muted prose-pre:text-foreground prose-pre:rounded-lg prose-pre:shadow-sm prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-primary prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-muted-foreground prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary prose-ol:list-decimal prose-ol:pl-6 prose-hr:border-border prose-hr:my-8 prose-table:overflow-hidden prose-th:bg-muted prose-th:font-semibold prose-td:border-border"
         >
           <h1>{{ selectedArticle.title }}</h1>

@@ -32,10 +32,15 @@ const props = defineProps<SidebarProps & { navMain: NavItem[] }>();
 
 const emit = defineEmits<{
   selectArticle: [item: NavItem];
+  selectFeed: [feed: NavItem];
 }>();
 
 const handleArticleClick = (item: NavItem) => {
   emit("selectArticle", item);
+};
+
+const handleFeedClick = (feed: NavItem) => {
+  emit("selectFeed", feed);
 };
 </script>
 
@@ -64,7 +69,10 @@ const handleArticleClick = (item: NavItem) => {
             <CollapsibleTrigger
               class="flex items-center justify-between w-full"
             >
-              <div class="flex items-center gap-3 min-w-0 flex-1 pr-3">
+              <div
+                class="flex items-center gap-3 min-w-0 flex-1 pr-3"
+                @click.stop="handleFeedClick(item)"
+              >
                 <Rss class="w-4 h-4 text-primary shrink-0" />
                 <span class="truncate text-left flex-1">{{ item.title }}</span>
                 <Badge variant="secondary" class="text-xs px-2 py-0.5 shrink-0">
