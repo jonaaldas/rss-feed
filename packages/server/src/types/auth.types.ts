@@ -1,11 +1,6 @@
 import { auth } from "../../lib/auth";
 
-type GetSessionResponse = Awaited<ReturnType<typeof auth.api.getSession>>;
-
-export type SessionUser = NonNullable<GetSessionResponse>["user"];
-export type SessionData = NonNullable<GetSessionResponse>["session"];
-
 export interface AuthVariables {
-  user: SessionUser | null;
-  session: SessionData | null;
+  user: typeof auth.$Infer.Session.user | null;
+  session: typeof auth.$Infer.Session.session | null;
 }

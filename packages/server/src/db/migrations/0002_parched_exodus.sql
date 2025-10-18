@@ -1,0 +1,1 @@
+ALTER TABLE "rss_feed" ADD CONSTRAINT "rss_feed_url_unique" UNIQUE("url");
