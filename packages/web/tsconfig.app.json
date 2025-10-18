@@ -1,5 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "references": [{ "path": "../server" }],
   "compilerOptions": {
     "composite": true,
     "noEmit": false,
@@ -18,6 +19,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@server/*": [
+        "../server/src/*"
       ]
     },
   

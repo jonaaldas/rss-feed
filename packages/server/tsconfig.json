@@ -1,7 +1,15 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "declaration": true,
     "strict": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
-  }
+    "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/lib/*": ["./src/lib/*"]
+    }
+  },
+  "include": ["src/**/*", "lib/**/*", "env.ts"]
 }

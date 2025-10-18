@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { AppType } from "@server/index";
+import { hc } from "hono/client";
+
+const client = hc<AppType>("http://localhost:9595/api");
+
+const { data } = await client.rss.fetch.$get();
+
+console.log(data);
+</script>
 
 <template>
   <div>

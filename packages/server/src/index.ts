@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { AuthVariables } from "./middlewate/auth";
 import { logger } from "hono/logger";
 import authRoutes from "./routes/auth";
+import rssRoutes from "./routes/rss";
 
 const router = new Hono<{ Variables: AuthVariables }>();
 
@@ -22,7 +23,8 @@ router
   .get("/", (c) => c.json({ message: "Hello World" }))
   .basePath("/api")
   .get("/ping", (c) => c.json({ message: "pong" }))
-  .route("/auth", authRoutes);
+  .route("/auth", authRoutes)
+  .route("/rss", rssRoutes);
 
 export type AppType = typeof router;
 
