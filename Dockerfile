@@ -12,7 +12,6 @@ COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY packages/server/package.json ./packages/server/
 COPY packages/web/package.json ./packages/web/
 COPY packages/shared/package.json ./packages/shared/
-COPY packages/mobile/package.json ./packages/mobile/ 2>/dev/null || true
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
