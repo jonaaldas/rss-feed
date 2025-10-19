@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from "@/components/ui/sidebar";
-import { ChevronRight, Rss, Calendar } from "lucide-vue-next";
+import { ChevronRight, Rss, Calendar, Plus, RefreshCcw } from "lucide-vue-next";
 import SearchForm from "@/components/SearchForm.vue";
 import {
   Collapsible,
@@ -18,9 +18,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { Badge } from "../components/ui/badge";
-
+import AddModal from "@/components/add-modal.vue";
 type NavItem = {
   title: string;
   url: string;
@@ -119,6 +121,12 @@ const handleFeedClick = (feed: NavItem) => {
         </SidebarGroup>
       </Collapsible>
     </SidebarContent>
+    <SidebarFooter class="flex flex-row gap-2">
+      <AddModal />
+      <Button variant="secondary" class="w-[15%]">
+        <RefreshCcw class="w-4 h-4" />
+      </Button>
+    </SidebarFooter>
     <SidebarRail />
   </Sidebar>
 </template>
