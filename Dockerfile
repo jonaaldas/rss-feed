@@ -19,11 +19,15 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application
 COPY . .
 
+# Build the frontend (outputs to packages/server/frontend/dist)
+WORKDIR /app/packages/web
+RUN pnpm run build
+
 # Change to server directory
 WORKDIR /app/packages/server
 
-# Set the entrypoint to run server
-CMD ["pnpm", "run", "dev"]
+# Set the entrypoint to run production server with tsx
+CMD ["pnpm", "run", "start"]
 
 
 # run docker build --platform linux/amd64 -t your-image-name .

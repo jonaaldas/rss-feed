@@ -8,8 +8,9 @@
   ],
   "scripts": {
     "dev": "pnpm --filter '*' dev",
-    "build": "pnpm --filter '*' build",
-    "start": "cd packages/server && pnpm run dev"
+    "build": "pnpm --filter @rss-feed/web build",
+    "start": "cd packages/server && pnpm run start",
+    "start:dev": "cd packages/server && pnpm run dev"
   },
   "devDependencies": {
     "@types/node": "latest"

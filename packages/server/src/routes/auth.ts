@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { requireAuth, AuthVariables } from "../middlewate/auth";
+import { AuthVariables } from "../middlewate/auth";
 import { auth } from "../../lib/auth";
 
 const router = new Hono<{ Variables: AuthVariables }>()
