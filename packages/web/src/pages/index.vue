@@ -45,7 +45,7 @@ const { data: rssFeeds } = useQuery({
   key: ["rssFeeds1"],
   query: async () => {
     try {
-      const data = await client.api.rss.$get();
+      const data = await client.rss.$get();
       return data.json();
     } catch (error) {
       throw error;
