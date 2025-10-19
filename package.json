@@ -7,12 +7,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun --filter '*' dev",
-    "build": "bun --filter '*' build",
-    "start": "cd packages/server && bun run dev"
+    "dev": "pnpm --filter '*' dev",
+    "build": "pnpm --filter '*' build",
+    "start": "cd packages/server && pnpm run dev"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/node": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"

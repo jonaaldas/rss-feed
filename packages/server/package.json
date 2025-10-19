@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "pnpm run --hot src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@rss-feed/shared": "packages/shared:*",
-    "@types/bun": "latest",
+    "@types/node": "latest",
     "@types/pg": "^8.15.5",
     "drizzle-kit": "^0.31.5",
     "tsx": "^4.20.6"
