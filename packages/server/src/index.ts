@@ -14,7 +14,11 @@ app.use(logger());
 const apiRoutes = new Hono<{ Variables: AuthVariables }>()
   .use(
     cors({
-      origin: ["http://localhost:5173", "http://localhost:3000"],
+      origin: [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://65.109.128.10:9595",
+      ],
       allowHeaders: ["Content-Type", "Authorization"],
       allowMethods: ["POST", "GET", "OPTIONS"],
       exposeHeaders: ["Content-Length"],
