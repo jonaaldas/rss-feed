@@ -45,6 +45,9 @@ importers:
       rss-parser:
         specifier: ^3.13.0
         version: 3.13.0
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@rss-feed/shared':
         specifier: packages/shared:*
@@ -92,6 +95,9 @@ importers:
       '@vueuse/core':
         specifier: ^13.9.0
         version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      better-auth:
+        specifier: 1.3.18
+        version: 1.3.18(vue@3.5.22(typescript@5.9.3))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1

@@ -20,7 +20,8 @@
     "hono": "^4.9.12",
     "ofetch": "^1.4.1",
     "pg": "^8.16.3",
-    "rss-parser": "^3.13.0"
+    "rss-parser": "^3.13.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@rss-feed/shared": "packages/shared:*",
