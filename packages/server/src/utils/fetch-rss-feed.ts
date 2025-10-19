@@ -1,5 +1,5 @@
 import { ofetch } from "ofetch";
-const Parser = require("rss-parser");
+import Parser from "rss-parser";
 
 export const fetchRssFeed = async (url: string) => {
   try {

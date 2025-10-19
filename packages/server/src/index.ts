@@ -5,6 +5,7 @@ import { AuthVariables, requireAuth } from "./middlewate/auth";
 import { logger } from "hono/logger";
 import authRouter from "./routes/auth";
 import rssRouter from "./routes/rss";
+import { serve } from "@hono/node-server";
 
 const app = new Hono<{ Variables: AuthVariables }>();
 
@@ -33,7 +34,12 @@ app.get("/*", serveStatic({ path: "./frontend/dist/index.html" }));
 
 export type AppType = typeof apiRoutes;
 
-export default {
-  port: 9595,
-  fetch: app.fetch,
-};
+serve(
+  {
+    fetch: app.fetch,
+    port: 9595,
+  },
+  (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`);
+  }
+);
