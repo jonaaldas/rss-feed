@@ -1,24 +1,30 @@
-# Use the official Bun image with platform specification
-FROM --platform=linux/amd64 oven/bun:1
+# Use Node.js LTS image
+FROM --platform=linux/amd64 node:20-slim
+
+# Install pnpm
+RUN npm install -g pnpm
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json files
-COPY package.json bun.lock ./
+# Copy pnpm workspace and package files
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY packages/server/package.json ./packages/server/
 COPY packages/web/package.json ./packages/web/
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/mobile/package.json ./packages/mobile/ 2>/dev/null || true
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
 
+# Change to server directory
 WORKDIR /app/packages/server
 
 # Set the entrypoint to run server
-CMD ["bun", "run", "src/index.ts"]
+CMD ["pnpm", "run", "dev"]
 
 
 # run docker build --platform linux/amd64 -t your-image-name .
