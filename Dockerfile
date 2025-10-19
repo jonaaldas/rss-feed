@@ -19,8 +19,14 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application
 COPY . .
 
+# Build arguments for environment variables
+ARG VITE_APP_URL
+ARG VITE_API_BASE_URL
+
 # Build the frontend (outputs to packages/server/frontend/dist)
 WORKDIR /app/packages/web
+ENV VITE_APP_URL=${VITE_APP_URL}
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 RUN pnpm run build
 
 # Change to server directory

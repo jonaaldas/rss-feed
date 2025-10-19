@@ -2,11 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
+const callbackURL = import.meta.env.VITE_APP_URL || window.location.origin;
+
 const signInWithGoogle = async () => {
   try {
     const data = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:5173/",
+      callbackURL: callbackURL,
     });
     console.log(data);
   } catch (error) {

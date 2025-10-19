@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_APP_URL: ${VITE_APP_URL:-http://localhost:9595}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/auth}
     platform: linux/amd64
     ports:
       - "9595:9595"
@@ -20,6 +23,7 @@ services:
       - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-rss_feed}
       - GOOLE_CLIENT_ID=${GOOLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - PRODUCTION_URL=${PRODUCTION_URL}
 
   db:
     image: postgres:17.0

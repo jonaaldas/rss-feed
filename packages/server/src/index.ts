@@ -11,16 +11,18 @@ const app = new Hono<{ Variables: AuthVariables }>();
 
 app.use(logger());
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.PRODUCTION_URL || "http://65.109.128.10:9595",
+].filter(Boolean);
+
 const apiRoutes = new Hono<{ Variables: AuthVariables }>()
   .use(
     cors({
-      origin: [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://65.109.128.10:9595",
-      ],
+      origin: allowedOrigins,
       allowHeaders: ["Content-Type", "Authorization"],
-      allowMethods: ["POST", "GET", "OPTIONS"],
+      allowMethods: ["POST", "GET", "OPTIONS", "DELETE", "PUT", "PATCH"],
       exposeHeaders: ["Content-Length"],
       maxAge: 600,
       credentials: true,
